@@ -29,6 +29,8 @@ final class Game {
                 break
             }
             
+            var lastDirective: Directive?
+            
             let dealer = players[currentDealerIndex]
             var guesser = players[currentGuesserIndex]
             
@@ -44,7 +46,7 @@ final class Game {
                 currentGuesserIndex = 0
             }
             
-            let guess = guesser.guess(deck)
+            let guess = guesser.guess(deck, directive: lastDirective)
             
             print("\(guesser) guesses \(guess)")
             let directive = dealer.upOrDown(actualCard: card, guess: guess)
@@ -53,8 +55,10 @@ final class Game {
                 print("\(guesser) guessed \(card) correctly")
                 guessedCorrectly = true
             case .higher:
+                lastDirective = .higher
                 print("Dealer says higher")
             case .lower:
+                lastDirective = .lower
                 print("Dealer says lower")
             }
             
@@ -70,7 +74,7 @@ final class Game {
                 continue
             }
             
-            let secondGuess = guesser.guess(deck)
+            let secondGuess = guesser.guess(deck, directive: lastDirective)
             
             print("\(guesser) guesses \(secondGuess)")
             let secondDirective = dealer.upOrDown(actualCard: card, guess: secondGuess)
@@ -79,7 +83,7 @@ final class Game {
                 print("\(guesser) guessed \(card) correctly")
                 guessedCorrectly = true
             case .higher, .lower:
-                ()
+                lastDirective = secondDirective
             }
             
             print("\(dealer) reveals \(card)")
