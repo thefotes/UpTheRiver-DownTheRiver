@@ -57,9 +57,7 @@ final class Player : Dealer, CustomStringConvertible {
         let beforePct: Double = (Double(remainingBefore) / Double(deck.count())) * 100
         let afterPct: Double = (Double(remainingAfter) / Double(deck.count())) * 100
         
-        print("Before: \(before) - \(beforePct)")
-        print("Middle: \(middle) - \(middlePct)")
-        print("After: \(after) - \(afterPct)")
+        print("Before: \(before) - \(format(double: beforePct)) | Middle: \(middle) - \(format(double: middlePct)) | After: \(after) - \(format(double: afterPct))")
         
         let cardToReturn: Card
         
@@ -75,13 +73,16 @@ final class Player : Dealer, CustomStringConvertible {
         } else {
             let guess = deck.randomCard()
             cardToReturn = guess
-            print("Choice: \(guess)")
             lastGuess = guess
         }
         
         return cardToReturn
     }
     
+    
+    private func format(double: Double) -> String {
+        return String(format: "%.2f", double)
+    }
     
     // MARK: Dealer
     func upOrDown(actualCard: Card, guess: Card) -> Directive {

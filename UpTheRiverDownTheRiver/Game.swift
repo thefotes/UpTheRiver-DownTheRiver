@@ -68,7 +68,7 @@ final class Game {
                 
                 currentGuesserIndex += 1
                 
-                print("\(dealer) reveals \(card)")
+                print("Dealer (\(dealer)) reveals \(card)")
                 separator()
                 
                 continue
@@ -86,7 +86,7 @@ final class Game {
                 lastDirective = secondDirective
             }
             
-            print("\(dealer) reveals \(card)")
+            print("Dealer (\(dealer)) reveals \(card)")
             
             deck.remove(at: index)
             
