@@ -16,8 +16,7 @@ protocol Dealer {
 
 final class Player : Dealer, CustomStringConvertible {
     let name: String
-    var isDealer: Bool = false
-    private(set) var lastGuess: Card?
+    private var lastGuess: Card?
     
     var description: String {
         return name
@@ -33,20 +32,54 @@ final class Player : Dealer, CustomStringConvertible {
         if let _lastGuess = lastGuess, let directive = directive {
             if case Directive.higher = directive {
                 let higherCards = deck.cards(higherThan: _lastGuess)
-                let guess = higherCards.randomCard()
-                lastGuess = guess
-                return guess
+
+                return guess(from: higherCards)
             } else if case Directive.lower = directive {
                 let lowerCards = deck.cards(lowerThan: _lastGuess)
-                let guess = lowerCards.randomCard()
-                lastGuess = guess
-                return guess
+
+                return guess(from: lowerCards)
             }
         }
         
-        let guess = deck.randomCard()
-        lastGuess = guess
-        return guess
+        return guess(from: deck)
+    }
+    
+    
+    private func guess(from deck: Deck) -> Card {
+        /// Gathers middle card and the cards to its immediate left and right
+        let (before, middle, after) = deck.middleCards()
+        
+        let remainingMiddle = deck.remainingEqualTo(middle)
+        let remainingBefore = deck.remainingEqualTo(before)
+        let remainingAfter = deck.remainingEqualTo(after)
+        
+        let middlePct: Double = (Double(remainingMiddle) / Double(deck.count())) * 100
+        let beforePct: Double = (Double(remainingBefore) / Double(deck.count())) * 100
+        let afterPct: Double = (Double(remainingAfter) / Double(deck.count())) * 100
+        
+        print("Before: \(before) - \(beforePct)")
+        print("Middle: \(middle) - \(middlePct)")
+        print("After: \(after) - \(afterPct)")
+        
+        let cardToReturn: Card
+        
+        if middlePct >= beforePct && middlePct >= afterPct {
+            cardToReturn = middle
+            lastGuess = middle
+        } else if beforePct >= middlePct && beforePct >= afterPct {
+            lastGuess = before
+            cardToReturn = before
+        } else if afterPct >= middlePct && afterPct >= beforePct {
+            cardToReturn = after
+            lastGuess = after
+        } else {
+            let guess = deck.randomCard()
+            cardToReturn = guess
+            print("Choice: \(guess)")
+            lastGuess = guess
+        }
+        
+        return cardToReturn
     }
     
     
